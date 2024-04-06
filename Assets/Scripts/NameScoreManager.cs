@@ -8,8 +8,8 @@ public class NameScoreManager : MonoBehaviour
     public static NameScoreManager instance;
 
     public string playerName;
-    public string highName;
-    public int highScore = 0;
+    public string bestScoreName;
+    public int bestScore = 0;
 
     private void Awake()
     {
@@ -20,27 +20,29 @@ public class NameScoreManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        LoadHighScore();
+        LoadBestScore();
     }
 
     [System.Serializable]
     class SaveData
     {
-        public string highName;
-        public int highScore;
+        public string bestScoreName;
+        public int bestScore;
     }
 
-    public void SaveHighScore()
+    // Save best scorer and their score for future sessions
+    public void SaveBestScore()
     {
         SaveData data = new SaveData();
-        data.highName = highName;
-        data.highScore = highScore;
+        data.bestScoreName = bestScoreName;
+        data.bestScore = bestScore;
         string json = JsonUtility.ToJson(data);
 
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
-    public void LoadHighScore()
+    // Load best scorer and their score from previous save
+    public void LoadBestScore()
     {
         string path = Application.persistentDataPath + "/savefile.json";
         if (File.Exists(path))
@@ -48,8 +50,8 @@ public class NameScoreManager : MonoBehaviour
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-            highName = data.highName;
-            highScore = data.highScore;
+            bestScoreName = data.bestScoreName;
+            bestScore = data.bestScore;
         }
     }
 }

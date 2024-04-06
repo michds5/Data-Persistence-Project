@@ -14,7 +14,7 @@ public class MenuUIHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        bestScoreText.text = $"Best Score : {NameScoreManager.instance.highName} : {NameScoreManager.instance.highScore}";
+        bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScoreName} : {NameScoreManager.instance.bestScore}";
     }
 
     // Update is called once per frame
@@ -23,16 +23,19 @@ public class MenuUIHandler : MonoBehaviour
         
     }
 
+    // Player name input by player - need to test what happens with large names
     public void SubmitName(string name)
     {
        NameScoreManager.instance.playerName = name;
     }
 
+    // Referenced by menu start button
     public void StartNew()
     {
         SceneManager.LoadScene(1);
     }
 
+    // Referenced by menu quit button
     public void Exit()
     {
 #if UNITY_EDITOR
