@@ -13,10 +13,10 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public Text bestScoreText;
     public GameObject gameOverDisplay;
-    
+
     private bool m_Started = false;
     private int m_Points;
-    
+
     private bool m_GameOver = false;
 
     // Start is called before the first frame update
@@ -24,8 +24,8 @@ public class MainManager : MonoBehaviour
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
+
+        int[] pointCountArray = new[] { 1, 1, 2, 2, 5, 5 };
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -36,7 +36,14 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
-        bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScoreName} : {NameScoreManager.instance.bestScore}";
+        if (NameScoreManager.instance.bestScores.Count > 0)
+        {
+            bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScores[0].bestScoreName} : {NameScoreManager.instance.bestScores[0].bestScore}";
+        }
+        else
+        {
+            bestScoreText.text = $"Best Score : 0";
+        }
         ScoreText.text = $"Score - {NameScoreManager.instance.playerName} : 0";
     }
 
@@ -76,15 +83,12 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
-        // Determine if new score beats the previous best score
-        if (NameScoreManager.instance.bestScore < m_Points)
-        {
-            NameScoreManager.instance.bestScore = m_Points;
-            NameScoreManager.instance.bestScoreName = NameScoreManager.instance.playerName;
-        }
-        NameScoreManager.instance.SaveBestScore();
+        NameScoreManager.instance.AddScore(NameScoreManager.instance.playerName, m_Points);
+        NameScoreManager.instance.SaveBestScores();
         m_GameOver = true;
-        bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScoreName} : {NameScoreManager.instance.bestScore}";
+        bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScores[0].bestScoreName} : {NameScoreManager.instance.bestScores[0].bestScore}";
         gameOverDisplay.SetActive(true);
     }
+
+
 }

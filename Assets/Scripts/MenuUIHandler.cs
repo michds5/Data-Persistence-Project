@@ -14,19 +14,30 @@ public class MenuUIHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScoreName} : {NameScoreManager.instance.bestScore}";
+        if (NameScoreManager.instance.bestScores.Count > 0)
+        {
+            bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScores[0].bestScoreName} : {NameScoreManager.instance.bestScores[0].bestScore}";
+        }
+        else
+        {
+            bestScoreText.text = $"Best Score : 0";
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     // Player name input by player - need to test what happens with large names
     public void SubmitName(string name)
     {
-       NameScoreManager.instance.playerName = name;
+        if (name.Length > 10)
+        {
+            name = name.Substring(0, 10);
+        }
+        NameScoreManager.instance.playerName = name;
     }
 
     // Referenced by menu start button
@@ -43,6 +54,12 @@ public class MenuUIHandler : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    // Referenced by Best Scores button
+    public void BestScores()
+    {
+        SceneManager.LoadScene(2);
     }
 
 }
