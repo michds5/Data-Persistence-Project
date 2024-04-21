@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainManager : MonoBehaviour
 {
@@ -12,12 +13,14 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public Text bestScoreText;
-    public GameObject gameOverDisplay;
+    public TextMeshProUGUI gameOverText;
+    public GameObject gameOverPopup;
 
     private bool m_Started = false;
     private int m_Points;
 
     private bool m_GameOver = false;
+    private int maxPoints = 96;
 
     // Start is called before the first frame update
     void Start()
@@ -36,15 +39,18 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
-        if (NameScoreManager.instance.bestScores.Count > 0)
+
+        if (NameScoreManager.instance.topScores.Count > 0)
         {
-            bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScores[0].bestScoreName} : {NameScoreManager.instance.bestScores[0].bestScore}";
+            bestScoreText.text = $"Best Score : " +
+                $"{NameScoreManager.instance.topScores[0].top10ScoreName} : " +
+                $"{NameScoreManager.instance.topScores[0].top10Score}";
         }
         else
         {
             bestScoreText.text = $"Best Score : 0";
         }
-        ScoreText.text = $"Score - {NameScoreManager.instance.playerName} : 0";
+        ScoreText.text = $"Score : {NameScoreManager.instance.playerName} : 0";
     }
 
     private void Update()
@@ -68,27 +74,38 @@ public class MainManager : MonoBehaviour
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
-            else if (Input.GetKeyDown(KeyCode.M))
-            {
-                SceneManager.LoadScene(0);
-            }
         }
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score - {NameScoreManager.instance.playerName} : {m_Points}";
+        ScoreText.text = $"Score : {NameScoreManager.instance.playerName} : {m_Points}";
     }
 
     public void GameOver()
     {
         NameScoreManager.instance.AddScore(NameScoreManager.instance.playerName, m_Points);
-        NameScoreManager.instance.SaveBestScores();
+        NameScoreManager.instance.SaveTopScores();
         m_GameOver = true;
-        bestScoreText.text = $"Best Score : {NameScoreManager.instance.bestScores[0].bestScoreName} : {NameScoreManager.instance.bestScores[0].bestScore}";
-        gameOverDisplay.SetActive(true);
+        bestScoreText.text = $"Best Score : " +
+            $"{NameScoreManager.instance.topScores[0].top10ScoreName} : " +
+            $"{NameScoreManager.instance.topScores[0].top10Score}";
+
+        if (m_Points >= maxPoints)
+        {
+            gameOverText.text = "YOU WIN!";
+        }
+        else
+        {
+            gameOverText.text = "GAME OVER";
+        }
+
+        gameOverPopup.SetActive(true);
     }
 
-
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
 }

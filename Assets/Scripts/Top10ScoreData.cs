@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class BestScoreData
+public class Top10ScoreData
 {
-    public string bestScoreName;
-    public int bestScore;
+    public string top10ScoreName;
+    public int top10Score;
 
 }
